@@ -1,0 +1,12 @@
+<% include head %>
+<p>Saving your GitHub session...</p>
+<script type="text/javascript">
+Parse.User.become('<%= sessionToken %>').then(function (user) {
+  window.location.href='/main';
+},
+function (error) {
+  alert('Login with GitHub Failed.');
+  window.location.href='/';
+});
+</script>
+<% include foot %>

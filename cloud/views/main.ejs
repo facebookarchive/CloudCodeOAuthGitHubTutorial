@@ -1,0 +1,55 @@
+<% include head %>
+<div id="github_details" style="display:none">
+  <h2>You're logged in with GitHub!</h2>
+  <ul>
+    <li>
+      <h3>Name</h3>
+      <p id="name"></p>
+    </li>
+    <li>
+      <h3>Login</h3>
+      <p id="login"></p>
+    </li>
+    <li>
+      <h3>Location</h3>
+      <p id="location"></p>
+    </li>
+    <li>
+      <h3>Blog</h3>
+      <p id="blog"></p>
+    </li>
+    <li>
+      <h3>Company</h3>
+      <p id="company"></p>
+    </li>
+    <li>
+      <h3>Followers</h3>
+      <p id="followers"></p>
+    </li>
+    <li>
+      <h3>Following</h3>
+      <p id="following"></p>
+    </li>
+  </ul>
+</div>
+<script type="text/javascript">
+if (!Parse.User.current()) {
+  window.location.href='/';
+} else {
+  Parse.Cloud.run('getGitHubData', {}).then(function(response) {
+      $('#name').text(response.name);
+      $('#login').text(response.login);
+      $('#location').text(response.location);
+      $('#blog').text(response.blog);
+      $('#company').text(response.company);
+      $('#followers').text(response.followers);
+      $('#following').text(response.following);
+      $('#github_details').show();
+  }, function(error) {
+    alert('There was an error getting your GitHub details, ' +
+      'please check the console for more information.');
+    console.log(error);
+  });
+}
+</script>
+<% include foot %>
