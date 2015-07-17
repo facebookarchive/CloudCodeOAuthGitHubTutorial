@@ -267,6 +267,7 @@ var upsertGitHubUser = function(accessToken, githubData) {
   var query = new Parse.Query(TokenStorage);
   query.equalTo('githubId', githubData.id);
   query.ascending('createdAt');
+  var password;
   // Check if this githubId has previously logged in, using the master key
   return query.first({ useMasterKey: true }).then(function(tokenData) {
     // If not, create a new user.
@@ -286,7 +287,17 @@ var upsertGitHubUser = function(accessToken, githubData) {
        */
       return tokenData.save(null, { useMasterKey: true });
     }).then(function(obj) {
-      // Return the user object.
+		password = new Buffer(24);
+		_.times(24, function(i) {
+			password.set(i, _.random(0, 255));
+		});
+		password = password.toString('base64')
+		user.setPassword(password);
+		return user.save();
+    }).then(function(user) {
+		return Parse.User.logIn(user.get('username'), password);
+    }).then(function(user) {
+     // Return the user object.
       return Parse.Promise.as(user);
     });
   });
